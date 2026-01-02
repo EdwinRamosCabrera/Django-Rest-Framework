@@ -3,12 +3,59 @@ from .serializers import PacienteSerializer, SeguroMedicoSerializer, ExpedienteM
 from .models import Paciente, SeguroMedico, ExpedienteMedico
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 
 # GET /api/pacientes/ => lista de pacientes
 # POST /api/pacientes/ => Crear un nuevo paciente
 # GET /api/pacientes/{id}/ => Detalle de un paciente por id
 # PUT /api/pacientes/{id}/ => Modificación de un paciente por id
+
+class ListPacientes(APIView):
+    allowed_methods = ['GET', 'POST']
+    def get(self, request):
+        pacientes = Paciente.objects.all()
+        serializer = PacienteSerializer(pacientes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PacienteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class PacienteDetail(APIView):
+    allowed_methods = ['GET', 'PUT', 'DELETE']
+    def get_object(self, pk):
+        try:
+            return Paciente.objects.get(id=pk)
+        except Paciente.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        paciente = self.get_object(pk)
+        if not paciente:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = PacienteSerializer(paciente)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        paciente = self.get_object(pk)
+        if not paciente:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = PacienteSerializer(paciente, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, pk):
+        paciente = self.get_object(pk)
+        if not paciente:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        paciente.delete()
+        return Response({'message':'Paciente eliminado correctamente'}, status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['GET', 'POST']) # indica que este endpoint solo acepta peticiones GET
 def paciente_list(request):
