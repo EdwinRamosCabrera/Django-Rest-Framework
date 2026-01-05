@@ -9,6 +9,7 @@ class Doctor(models.Model):
     correo = models.EmailField(unique=True)
     direccion = models.TextField()
     biografia = models.TextField()
+    is_on_vacation = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nombre}"
