@@ -1,6 +1,20 @@
 from django.db import models
 
 class Paciente(models.Model):
+    '''
+    Modelo que representa a un paciente en el sistema de gestión médica.
+    Contiene información personal y médica básica del paciente.
+    * Atributos:
+    - nombre: Nombre del paciente.
+    - apellido: Apellido del paciente.
+    - fecha_nacimiento: Fecha de nacimiento del paciente.
+    - telefono: Número de teléfono del paciente.
+    - correo: Correo electrónico del paciente.
+    - direccion: Dirección del paciente.
+    - historial_medico: Historial médico del paciente.
+    * Metodos:
+    - __str__: Retorna una representación en cadena del paciente.
+    '''
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     fecha_nacimiento = models.DateField()
