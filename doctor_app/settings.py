@@ -127,7 +127,16 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    # Configuración de limitación de tasa (throttling)
+    'DEFAULT_THROTTLE_CLASSES': [
+    'rest_framework.throttling.AnonRateThrottle', # Limita la cantidad de solicitudes que un usuario anónimo puede hacer en un período de tiempo determinado.
+    'rest_framework.throttling.UserRateThrottle' # Limita la cantidad de solicitudes que un usuario autenticado puede hacer en un período de tiempo determinado.
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/min', # Limita a los usuarios anónimos a 100 solicitudes por día. También se pueden definir otras tasas como '5/minute' o '1000/hour'.
+        'user': '1000/day' # Limita a los usuarios autenticados a 1000 solicitudes por día. También se pueden definir otras tasas como '10/minute' o '5000/hour'.
+    }
 }
 
 SPECTACULAR_SETTINGS = {
